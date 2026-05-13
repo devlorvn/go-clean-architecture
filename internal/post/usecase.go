@@ -8,14 +8,14 @@ func NewUseCase(repo Repository) *UseCase {
 	return &UseCase{Repo: repo}
 }
 
-func (u *UseCase) Create(title, content string, authorID int) (*Post, error) {
+func (u *UseCase) Create(title, content string, authorID int64) (*Post, error) {
 	post := &Post{Title: title, Content: content, AuthorID: authorID}
 	err := u.Repo.Create(post)
 
 	return post, err
 }
 
-func (u *UseCase) GetByID(id int) (*Post, error) {
+func (u *UseCase) GetByID(id int64) (*Post, error) {
 	return u.Repo.GetByID(id)
 }
 
@@ -23,7 +23,7 @@ func (u *UseCase) GetAll() ([]*Post, error) {
 	return u.Repo.GetAll()
 }
 
-func (u *UseCase) Update(id int, title, content string) (*Post, error) {
+func (u *UseCase) Update(id int64, title, content string) (*Post, error) {
 	post, err := u.Repo.GetByID(id)
 	if err != nil {
 		return nil, err
@@ -39,6 +39,6 @@ func (u *UseCase) Update(id int, title, content string) (*Post, error) {
 	return post, nil
 }
 
-func (u *UseCase) Delete(id int) error {
+func (u *UseCase) Delete(id int64) error {
 	return u.Repo.Delete(id)
 }

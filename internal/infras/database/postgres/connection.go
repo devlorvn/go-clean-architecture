@@ -2,13 +2,15 @@ package database
 
 import (
 	"fmt"
+	"go-clean-architecture/internal/config"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func NewPostgres() (*gorm.DB, error) {
-	dsn := "host=localhost user=admin password=secret dbname=clean_arch port=5432 sslmode=disable"
+func NewPostgres(cfg *config.Config) (*gorm.DB, error) {
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
+		cfg.DBHost, cfg.DBUser, cfg.DBPass, cfg.DBName, cfg.DBPort, cfg.DBSSLMode)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err

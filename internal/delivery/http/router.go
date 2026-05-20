@@ -14,6 +14,8 @@ func NewRouter(h *HandleGroup) *gin.Engine {
 	r.POST("/authors", h.Author.Create)
 	r.PUT("/authors/:id", h.Author.Update)
 	r.DELETE("/authors/:id", h.Author.Delete)
+	r.PUT("/authors/:id/deactivate", h.Author.Deactivate)
+	r.PUT("/authors/:id/activate", h.Author.Activate)
 
 	r.GET("/posts", h.Post.GetAll)
 	r.GET("/posts/:id", h.Post.GetByID)

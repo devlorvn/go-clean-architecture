@@ -39,6 +39,7 @@ func (p *Post) GetByID(ctx context.Context, id int64) (*post.Post, error) {
 		Title:    postModel.Title,
 		Content:  postModel.Content,
 		AuthorID: postModel.AuthorID,
+		Active:   postModel.Active,
 	}, nil
 }
 
@@ -55,6 +56,7 @@ func (p *Post) GetAll(ctx context.Context) ([]*post.Post, error) {
 			Title:    m.Title,
 			Content:  m.Content,
 			AuthorID: m.AuthorID,
+			Active:   m.Active,
 		}
 	}
 	return posts, nil
@@ -79,6 +81,7 @@ func (p *Post) Update(ctx context.Context, post *post.Post) error {
 		"title":     post.Title,
 		"content":   post.Content,
 		"author_id": post.AuthorID,
+		"active":    post.Active,
 	}).Error
 }
 

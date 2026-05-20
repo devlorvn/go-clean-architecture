@@ -46,8 +46,9 @@ func (a *Author) GetByID(ctx context.Context, id int64) (*author.Author, error) 
 		return nil, err
 	}
 	return &author.Author{
-		ID:   authorModel.ID,
-		Name: authorModel.Name,
+		ID:     authorModel.ID,
+		Name:   authorModel.Name,
+		Active: authorModel.Active,
 	}, nil
 }
 
@@ -60,8 +61,9 @@ func (a *Author) GetAll(ctx context.Context) ([]*author.Author, error) {
 	authors := make([]*author.Author, len(authorModels))
 	for i, m := range authorModels {
 		authors[i] = &author.Author{
-			ID:   m.ID,
-			Name: m.Name,
+			ID:     m.ID,
+			Name:   m.Name,
+			Active: m.Active,
 		}
 	}
 	return authors, nil
@@ -69,7 +71,8 @@ func (a *Author) GetAll(ctx context.Context) ([]*author.Author, error) {
 
 func (a *Author) Update(ctx context.Context, author *author.Author) error {
 	return a.dbFromContext(ctx).Model(&postgresModel.Author{}).Where("id = ?", author.ID).Updates(map[string]interface{}{
-		"name": author.Name,
+		"name":   author.Name,
+		"active": author.Active,
 	}).Error
 }
 

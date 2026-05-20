@@ -75,13 +75,19 @@ func (h *PostHandler) Update(c *gin.Context) {
 	var req struct {
 		Title   string `json:"title" binding:"required"`
 		Content string `json:"content" binding:"required"`
+		Active  *bool  `json:"active"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	post, err := h.uc.Update(c.Request.Context(), id, req.Title, req.Content)
+	var active *bool
+	if req.Active != nil {
+		active = req.Active
+	}
+
+	post, err := h.uc.Update(c.Request.Context(), id, req.Title, req.Content, active != nil && *active)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

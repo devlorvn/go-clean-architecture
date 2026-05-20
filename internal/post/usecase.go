@@ -11,7 +11,7 @@ func NewUseCase(repo Repository) *UseCase {
 }
 
 func (u *UseCase) Create(ctx context.Context, title, content string, authorID int64) (*Post, error) {
-	post := &Post{Title: title, Content: content, AuthorID: authorID}
+	post := &Post{Title: title, Content: content, AuthorID: authorID, Active: true}
 	err := u.Repo.Create(ctx, post)
 
 	return post, err
@@ -25,13 +25,14 @@ func (u *UseCase) GetAll(ctx context.Context) ([]*Post, error) {
 	return u.Repo.GetAll(ctx)
 }
 
-func (u *UseCase) Update(ctx context.Context, id int64, title, content string) (*Post, error) {
+func (u *UseCase) Update(ctx context.Context, id int64, title, content string, active bool) (*Post, error) {
 	post, err := u.Repo.GetByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 	post.Title = title
 	post.Content = content
+	post.Active = active
 
 	err = u.Repo.Update(ctx, post)
 	if err != nil {

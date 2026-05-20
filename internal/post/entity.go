@@ -5,4 +5,5 @@ type Post struct {
 	Title    string `json:"title"`
 	Content  string `json:"content"`
 	AuthorID int64  `json:"author_id"`
+	Active   bool   `json:"active"`
 }

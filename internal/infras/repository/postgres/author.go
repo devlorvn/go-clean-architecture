@@ -1,7 +1,9 @@
 package postgres
 
 import (
+	"context"
 	"go-clean-architecture/internal/author"
+	database "go-clean-architecture/internal/infras/database/postgres"
 	postgresModel "go-clean-architecture/internal/infras/database/postgres/model"
 
 	"gorm.io/gorm"
@@ -15,11 +17,18 @@ func NewAuthor(db *gorm.DB) *Author {
 	return &Author{db: db}
 }
 
-func (a *Author) Create(author *author.Author) error {
+func (a *Author) dbFromContext(ctx context.Context) *gorm.DB {
+	if tx, ok := database.TxFromContext(ctx); ok {
+		return tx.WithContext(ctx)
+	}
+	return a.db.WithContext(ctx)
+}
+
+func (a *Author) Create(ctx context.Context, author *author.Author) error {
 	newAuthor := postgresModel.Author{
 		Name: author.Name,
 	}
-	err := a.db.Create(&newAuthor).Error
+	err := a.dbFromContext(ctx).Create(&newAuthor).Error
 	if err != nil {
 		return err
 	}
@@ -27,9 +36,9 @@ func (a *Author) Create(author *author.Author) error {
 	return nil
 }
 
-func (a *Author) GetByID(id int64) (*author.Author, error) {
+func (a *Author) GetByID(ctx context.Context, id int64) (*author.Author, error) {
 	var authorModel postgresModel.Author
-	err := a.db.First(&authorModel, id).Error
+	err := a.dbFromContext(ctx).First(&authorModel, id).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, nil
@@ -42,9 +51,9 @@ func (a *Author) GetByID(id int64) (*author.Author, error) {
 	}, nil
 }
 
-func (a *Author) GetAll() ([]*author.Author, error) {
+func (a *Author) GetAll(ctx context.Context) ([]*author.Author, error) {
 	var authorModels []postgresModel.Author
-	err := a.db.Find(&authorModels).Error
+	err := a.dbFromContext(ctx).Find(&authorModels).Error
 	if err != nil {
 		return nil, err
 	}
@@ -58,12 +67,12 @@ func (a *Author) GetAll() ([]*author.Author, error) {
 	return authors, nil
 }
 
-func (a *Author) Update(author *author.Author) error {
-	return a.db.Model(&postgresModel.Author{}).Where("id = ?", author.ID).Updates(map[string]interface{}{
+func (a *Author) Update(ctx context.Context, author *author.Author) error {
+	return a.dbFromContext(ctx).Model(&postgresModel.Author{}).Where("id = ?", author.ID).Updates(map[string]interface{}{
 		"name": author.Name,
 	}).Error
 }
 
-func (a *Author) Delete(id int64) error {
-	return a.db.Delete(&postgresModel.Author{}, id).Error
+func (a *Author) Delete(ctx context.Context, id int64) error {
+	return a.dbFromContext(ctx).Delete(&postgresModel.Author{}, id).Error
 }

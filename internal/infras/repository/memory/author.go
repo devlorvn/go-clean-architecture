@@ -1,6 +1,9 @@
 package repository
 
-import "go-clean-architecture/internal/author"
+import (
+	"context"
+	"go-clean-architecture/internal/author"
+)
 
 type AuthorMemory struct {
 	data map[int64]*author.Author
@@ -14,14 +17,14 @@ func NewAuthorMemory() *AuthorMemory {
 	}
 }
 
-func (r *AuthorMemory) GetByID(id int64) (*author.Author, error) {
+func (r *AuthorMemory) GetByID(_ context.Context, id int64) (*author.Author, error) {
 	if author, ok := r.data[id]; ok {
 		return author, nil
 	}
 	return nil, nil
 }
 
-func (r *AuthorMemory) GetAll() ([]*author.Author, error) {
+func (r *AuthorMemory) GetAll(_ context.Context) ([]*author.Author, error) {
 	authors := make([]*author.Author, 0, len(r.data))
 	for _, author := range r.data {
 		authors = append(authors, author)
@@ -29,14 +32,14 @@ func (r *AuthorMemory) GetAll() ([]*author.Author, error) {
 	return authors, nil
 }
 
-func (r *AuthorMemory) Create(author *author.Author) error {
+func (r *AuthorMemory) Create(_ context.Context, author *author.Author) error {
 	r.id++
 	author.ID = r.id
 	r.data[author.ID] = author
 	return nil
 }
 
-func (r *AuthorMemory) Update(author *author.Author) error {
+func (r *AuthorMemory) Update(_ context.Context, author *author.Author) error {
 	if _, ok := r.data[author.ID]; !ok {
 		return nil
 	}
@@ -44,7 +47,7 @@ func (r *AuthorMemory) Update(author *author.Author) error {
 	return nil
 }
 
-func (r *AuthorMemory) Delete(id int64) error {
+func (r *AuthorMemory) Delete(_ context.Context, id int64) error {
 	delete(r.data, id)
 	return nil
 }

@@ -28,7 +28,7 @@ func (h *PostHandler) Create(c *gin.Context) {
 		return
 	}
 
-	post, err := h.uc.Create(req.Title, req.Content, req.AuthorID)
+	post, err := h.uc.Create(c.Request.Context(), req.Title, req.Content, req.AuthorID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -43,7 +43,7 @@ func (h *PostHandler) GetByID(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
 		return
 	}
-	post, err := h.uc.GetByID(id)
+	post, err := h.uc.GetByID(c.Request.Context(), id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -57,7 +57,7 @@ func (h *PostHandler) GetByID(c *gin.Context) {
 }
 
 func (h *PostHandler) GetAll(c *gin.Context) {
-	Posts, err := h.uc.GetAll()
+	Posts, err := h.uc.GetAll(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -81,7 +81,7 @@ func (h *PostHandler) Update(c *gin.Context) {
 		return
 	}
 
-	post, err := h.uc.Update(id, req.Title, req.Content)
+	post, err := h.uc.Update(c.Request.Context(), id, req.Title, req.Content)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -97,7 +97,7 @@ func (h *PostHandler) Delete(c *gin.Context) {
 		return
 	}
 
-	err = h.uc.Delete(id)
+	err = h.uc.Delete(c.Request.Context(), id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

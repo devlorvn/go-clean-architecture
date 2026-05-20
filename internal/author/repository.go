@@ -1,9 +1,11 @@
 package author
 
+import "context"
+
 type Repository interface {
-	GetByID(id int64) (*Author, error)
-	GetAll() ([]*Author, error)
-	Create(author *Author) error
-	Update(author *Author) error
-	Delete(id int64) error
+	GetByID(ctx context.Context, id int64) (*Author, error)
+	GetAll(ctx context.Context) ([]*Author, error)
+	Create(ctx context.Context, author *Author) error
+	Update(ctx context.Context, author *Author) error
+	Delete(ctx context.Context, id int64) error
 }

@@ -26,7 +26,7 @@ func (h *AuthorHandler) Create(c *gin.Context) {
 		return
 	}
 
-	author, err := h.uc.Create(req.Name)
+	author, err := h.uc.Create(c.Request.Context(), req.Name)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -41,7 +41,7 @@ func (h *AuthorHandler) GetByID(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
 		return
 	}
-	author, err := h.uc.GetByID(id)
+	author, err := h.uc.GetByID(c.Request.Context(), id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -54,7 +54,7 @@ func (h *AuthorHandler) GetByID(c *gin.Context) {
 }
 
 func (h *AuthorHandler) GetAll(c *gin.Context) {
-	authors, err := h.uc.GetAll()
+	authors, err := h.uc.GetAll(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -77,7 +77,7 @@ func (h *AuthorHandler) Update(c *gin.Context) {
 		return
 	}
 
-	author, err := h.uc.Update(id, req.Name)
+	author, err := h.uc.Update(c.Request.Context(), id, req.Name)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -93,7 +93,7 @@ func (h *AuthorHandler) Delete(c *gin.Context) {
 		return
 	}
 
-	err = h.uc.Delete(id)
+	err = h.uc.Delete(c.Request.Context(), id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -109,13 +109,13 @@ func (h *AuthorHandler) Deactivate(c *gin.Context) {
 		return
 	}
 
-	author, err := h.uc.Deactivate(id)
+	err = h.uc.Deactivate(c.Request.Context(), id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": author})
+	c.JSON(http.StatusOK, gin.H{"data": "author deactivated"})
 }
 
 func (h *AuthorHandler) Activate(c *gin.Context) {
@@ -125,11 +125,11 @@ func (h *AuthorHandler) Activate(c *gin.Context) {
 		return
 	}
 
-	author, err := h.uc.Activate(id)
+	err = h.uc.Activate(c.Request.Context(), id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": author})
+	c.JSON(http.StatusOK, gin.H{"data": "author activated"})
 }

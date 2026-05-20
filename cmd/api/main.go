@@ -18,10 +18,11 @@ func main() {
 		panic(err)
 	}
 	authorRepo := postgresRepo.NewAuthor(db)
-	authorUC := author.NewUseCase(authorRepo)
+	postRepo := postgresRepo.NewPost(db)
+	txManager := database.NewTransaction(db)
+	authorUC := author.NewUseCase(authorRepo, postRepo, txManager)
 	authorHandler := httpDelivery.NewAuthorHandler(authorUC)
 
-	postRepo := postgresRepo.NewPost(db)
 	postUC := post.NewUseCase(postRepo)
 	postHandler := httpDelivery.NewPostHandler(postUC)
 
